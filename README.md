@@ -1,8 +1,8 @@
 # AI Photo Gallery Manager
 
-A local, AI-powered photo management tool that helps you **search, review, and safely delete photos using natural language**.
+A local photo manager that helps you search, review, and safely delete images using natural language.
 
-This app scans your photo folders, understands what's inside each image using an AI vision model, and lets you find images with prompts like:
+It scans your photo folders, generates short captions with an AI vision model, and lets you search with prompts like:
 
 - "math notes"
 - "handwritten equations"
@@ -10,26 +10,26 @@ This app scans your photo folders, understands what's inside each image using an
 - "documents"
 - "screenshots with text"
 
-You stay fully in control: everything runs locally except the AI calls, and deletions go to the **Windows Recycle Bin**, not permanent delete.
+You stay in control: the app runs locally, deletions go to the Windows Recycle Bin, and images stay on disk.
 
 ---
 
-## What This App Does
+## How it works
 
-### 1. Indexes Your Photos
-You point the app to one or more photo folders. For each image, it:
+### 1. Index your folders
+Point the app at one or more photo folders. For each image it:
 
-- Loads and downsizes the image (for speed and lower API cost)
-- Generates a **short descriptive caption** using an AI vision model
-- Creates a **semantic embedding** of that caption
-- Stores everything locally in a small SQLite database
+- Loads and downsizes for speed
+- Generates a short caption
+- Creates a semantic embedding
+- Stores the metadata in a local SQLite database
 
-Only metadata is stored -- your images remain exactly where they are on disk.
+Only metadata is stored -- your images are never moved or copied.
 
 ---
 
-### 2. Lets You Search with Natural Language
-Instead of folders and filenames, you search using meaning.
+### 2. Search by meaning
+Search using natural language instead of file names.
 
 Examples:
 - "math notes"
@@ -37,81 +37,77 @@ Examples:
 - "passport photo"
 - "notes on lined paper"
 
-The app converts your query into an embedding and finds the most semantically similar images, even if the exact words never appear.
+Your query is embedded and matched against the captions, so similar concepts show up even if the words differ.
 
 ---
 
-### 3. Shows Results Visually
-Search results are displayed as:
+### 3. Review results visually
+Results show:
 
-- Image thumbnails
-- AI-generated captions
+- Thumbnails
+- Captions
 - Relevance scores
 
-You can visually inspect everything before taking any action.
+You can inspect everything before taking action.
 
 ---
 
-### 4. Safely Deletes Photos (Recycle Bin)
-Selected images can be removed **from within the app**.
+### 4. Delete safely
+You can remove selected images from inside the app.
 
 Important:
-- Files are sent to the **Windows Recycle Bin**
+- Files go to the Windows Recycle Bin
 - Nothing is permanently deleted
-- Deleted files are marked as such in the local database
-
-This makes cleanup safe and reversible.
+- Deleted items are marked in the database
 
 ---
 
-## Why This Exists
-
-Traditional photo managers rely on:
-- Folder structure
-- Filenames
-- Manual tagging
-
-This app is designed for:
-- Large, messy photo collections
-- Scanned notes, whiteboards, screenshots
-- People who want to *search by meaning*, not by memory
-
-It is especially useful for:
-- Students
-- Teachers
-- Researchers
-- Anyone with years of screenshots or photographed notes
+## Why this exists
+Most photo managers rely on folders, file names, or manual tags. This app is for large, messy collections where you want to search by meaning: scanned notes, whiteboards, screenshots, and similar content.
 
 ---
 
-## AI Provider Design (OpenAI / Gemini)
+## AI provider design (OpenAI / Gemini)
+The provider is pluggable:
 
-The app is built with a **pluggable AI provider interface**.
-
-- OpenAI is used by default
-- Gemini can be swapped in later without changing the app logic
+- OpenAI is the default
+- Gemini can be swapped in later
 - Provider choice is controlled via environment variables
 
-This avoids lock-in and keeps the core app stable.
+This keeps the core app stable and avoids lock-in.
 
 ---
 
-## What Runs Locally vs Remotely
+## What runs locally vs remotely
 
-**Local**
+Local:
 - Folder scanning
 - Image previews
 - Database (SQLite)
 - Search ranking
 - Deletion logic
 
-**Remote (via API)**
+Remote (via API):
 - Image captioning
 - Text embeddings
 
-No images or metadata are uploaded anywhere except during the AI request itself.
+Images and metadata stay local except during the AI request itself.
 
 ---
 
-## Project Structure (Simplified)
+## Project structure (simplified)
+
+```
+app.py
+core/
+  db.py
+  indexer.py
+  search.py
+providers/
+  openai_provider.py
+  gemini_provider.py
+utils/
+  images.py
+  paths.py
+```
 
